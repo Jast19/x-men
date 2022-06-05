@@ -16,7 +16,7 @@ public class Mutant {
 
     private String id;
     private String adn;
-    private boolean isMutant;
+    private Boolean isMutant;
 
     @DynamoDbPartitionKey
     public String getId() {

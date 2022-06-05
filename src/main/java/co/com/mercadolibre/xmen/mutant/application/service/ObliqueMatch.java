@@ -11,21 +11,17 @@ import reactor.core.publisher.Mono;
 public class ObliqueMatch implements DetectMutant {
 
     private final UtilMatch utilMatch;
-    private final List<String> nitrogenBaseDna;
-    private final int patternSizeDna;
 
     @Autowired
     public ObliqueMatch(UtilMatch utilMatch) {
         this.utilMatch = utilMatch;
-        this.nitrogenBaseDna = utilMatch.getNitrogenBaseDna();
-        this.patternSizeDna = utilMatch.patternSizeDna();
     }
 
     @Override
     public Mono<Boolean> match(String[] dna, Long initSequence) {
         List<String> sequencesLeftToRight = passDataObliqueLeftToRight(dna);
         long sequence = initSequence
-            + this.searchMutant(sequencesLeftToRight, this.nitrogenBaseDna);
+            + this.searchMutant(sequencesLeftToRight, this.utilMatch.getNitrogenBaseDna());
 
         if (this.utilMatch.hasMutant(sequence)) {
             return Mono.just(Boolean.TRUE);
@@ -36,7 +32,7 @@ public class ObliqueMatch implements DetectMutant {
 
     private Mono<Boolean> obliqueRightToLeft(String[] pattern, Long init) {
         List<String> sequencesRightToLeft = passDataObliqueRightToLeft(pattern);
-        long sequence = init + this.searchMutant(sequencesRightToLeft, this.nitrogenBaseDna);
+        long sequence = init + this.searchMutant(sequencesRightToLeft, this.utilMatch.getNitrogenBaseDna());
         return Mono.just(this.utilMatch.hasMutant(sequence));
     }
 
@@ -54,7 +50,7 @@ public class ObliqueMatch implements DetectMutant {
             for (int k = 0; k < pattern.length - i; k++) {
                 sequenceHigher.append(pattern[k].charAt(k + i));
             }
-            if (sequenceHigher.length() < this.patternSizeDna) {
+            if (sequenceHigher.length() < this.utilMatch.patternSizeDna()) {
                 break;
             }
             sequences.add(sequenceHigher.toString());
@@ -69,7 +65,7 @@ public class ObliqueMatch implements DetectMutant {
             for (int k = 0; k < pattern.length - i; k++) {
                 sequenceLower.append(pattern[i + k].charAt(k));
             }
-            if (sequenceLower.length() < this.patternSizeDna) {
+            if (sequenceLower.length() < this.utilMatch.patternSizeDna()) {
                 break;
             }
             sequences.add(sequenceLower.toString());
@@ -92,7 +88,7 @@ public class ObliqueMatch implements DetectMutant {
             for (int k = pattern.length - i; j <= pattern.length - i; k--, j++) {
                 sequenceHigher.append(pattern[j].charAt(k));
             }
-            if (sequenceHigher.length() < this.patternSizeDna) {
+            if (sequenceHigher.length() < this.utilMatch.patternSizeDna()) {
                 break;
             }
             sequences.add(sequenceHigher.toString());
@@ -109,7 +105,7 @@ public class ObliqueMatch implements DetectMutant {
                 sequenceLower.append(pattern[j].charAt(k));
                 j++;
             }
-            if (sequenceLower.length() < this.patternSizeDna) {
+            if (sequenceLower.length() < this.utilMatch.patternSizeDna()) {
                 break;
             }
             sequences.add(sequenceLower.toString());

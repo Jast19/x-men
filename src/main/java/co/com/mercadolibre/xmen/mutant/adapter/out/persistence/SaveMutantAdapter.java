@@ -37,7 +37,7 @@ public class SaveMutantAdapter implements SaveMutantPort {
         return updateItem(mutant).then(Mono.just(isMutant));
     }
 
-    public Mono<Void> updateItem(Mutant item) {
+    private Mono<Void> updateItem(Mutant item) {
         log.info("Updating element {} in table: {}...", item.toString(), tableName);
         DynamoDbTable<Mutant> mappedTable = this.dynamoDbEnhancedClient.table(tableName,
             TableSchema.fromBean(Mutant.class));
